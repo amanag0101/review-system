@@ -1,11 +1,10 @@
 import type { NextPage } from 'next'
+import Layout from '../components/public/layout/Layout';
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <h1>Homepage</h1>
-    </div>
-  )
+    <Layout children={<></>} />  
+  );
 }
 
 export default Home
