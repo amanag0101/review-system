@@ -59,3 +59,20 @@ body[data-theme="dark"] p,
 body[data-theme="dark"] a {
   color: var(--color-text-primary);
 }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background-primary); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-background-secondary); 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-blue); 
+}
