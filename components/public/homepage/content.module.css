@@ -1,0 +1,27 @@
+.content {
+    background-color: var(--color-background-primary);
+    padding: 12px;
+}
+
+.content .container {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.content .container .col-1 {
+    flex: 1;
+    text-align: center;
+}
+
+.content .container .col-2 {
+    flex: 1;
+}
+
+.content .container .col-2 h2 {
+    margin-bottom: 12px;
+}
+
+.content p {
+    margin-bottom: 24px;
+}
