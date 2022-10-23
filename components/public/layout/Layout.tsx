@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
 import { Theme } from "../constants/Theme";
+import Footer from "../footer/Footer";
 import Header from "../header/Header";
 
 interface LayoutContextProps {
@@ -43,6 +44,8 @@ export default function Layout({children} : LayoutProps) {
             <Header />
             
             { children }
+
+            <Footer />
         </LayoutContext.Provider>
     );
 }
