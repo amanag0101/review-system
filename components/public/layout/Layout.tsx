@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { Theme } from "../constants/Theme";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import { getThemeFromLocalStorage, setThemeInLocalStorage } from "../storage/LocalStorage";
 
 interface LayoutContextProps {
     theme: Theme,
@@ -22,17 +23,21 @@ export default function Layout({children} : LayoutProps) {
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
     useEffect(() => {
+        setTheme(getThemeFromLocalStorage());
+    }, [])
+
+    useEffect(() => {
         document.body.dataset.theme = theme;
     }, [theme]);
 
     const toggleTheme = () => {
         if(theme === Theme.LIGHT) {
             setTheme(Theme.DARK);
-            // setThemeInLocalStorage(Theme.DARK);
+            setThemeInLocalStorage(Theme.DARK);
         }
         else {
             setTheme(Theme.LIGHT);
-            // setThemeInLocalStorage(Theme.LIGHT);
+            setThemeInLocalStorage(Theme.LIGHT);
         }
     }  
 

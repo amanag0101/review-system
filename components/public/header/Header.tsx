@@ -30,13 +30,13 @@ export default function Header() {
 
             <div className={styles["col-2"]}>
                 <div className={`${styles.item} ${styles[isActiveLink("/")]}`}>
-                    <HomeIcon className={styles["icon"]} />
+                    <HomeIcon className="icon" />
                     <Link href="/">Home</Link>
                 </div>
 
                 <div className={`${styles.item} ${styles[isActiveLink("/reviews")]}`}>
-                    <StarIcon className={styles["icon"]} />
-                    <Link href="#">Reviews</Link>
+                    <StarIcon className="icon" />
+                    <Link href="/reviews">Reviews</Link>
                 </div>
                 
                 <div className={styles.theme}>
@@ -51,7 +51,7 @@ export default function Header() {
             
             <div className={styles["col-3"]}>
                 <div className={`${styles.item} ${styles[isActiveLink("/login")]}`}>
-                    <AccountCircleIcon className={styles["icon"]} />
+                    <AccountCircleIcon className="icon" />
                     <Link href="#">Login</Link>
                 </div>
             </div>
