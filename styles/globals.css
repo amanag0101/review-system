@@ -26,6 +26,8 @@ a {
 
 /* Light Theme */
 body[data-theme="light"] {
+  background-color: #e8e8e8;
+
   --color-background-primary: #fff;
   --color-background-secondary: #ccc;
 
@@ -52,6 +54,8 @@ body[data-theme="light"] input {
 
 /* Dark Theme */
 body[data-theme="dark"] {
+  background-color: #2a2d2e;
+
   --color-background-primary: #1e1e1e;
   --color-background-secondary: #4f4f4f;
 

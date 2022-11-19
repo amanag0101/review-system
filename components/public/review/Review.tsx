@@ -1,5 +1,7 @@
 import Searchbar from "../searchbar/Searchbar";
+import Filter from "../filter/Filter";
 import styles from "./review.module.css";
+import ItemBox from "./ItemBox";
 
 export default function Review() {
     return (
@@ -10,10 +12,21 @@ export default function Review() {
 
             <div className={styles["container"]}>
                 <div className={styles["col-1"]}>
-                    Filter
+                    <Filter />
                 </div>
                 <div className={styles["col-2"]}>
-                    Review
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
+                    <ItemBox />
                 </div>
             </div>
         </div>

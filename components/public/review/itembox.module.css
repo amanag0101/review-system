@@ -1,0 +1,15 @@
+.itembox {
+    padding: 8px;
+}
+
+.itembox img {
+    max-height: 200px;
+    max-width: 200px;
+    display: block;
+    margin: auto;
+}
+
+.itembox p {
+    text-align: center;
+    padding: 2px;
+}

@@ -3,16 +3,11 @@
 }
 
 .review .searchbar {
-    margin-bottom: 4px;
+    margin-bottom: 12px;
 }
 
 .review .container {
     display: flex;
-}
-
-.review .container .col-1,
-.review .container .col-2 {
-    border: 1px solid;
 }
 
 .review .container .col-1 {
@@ -20,6 +15,11 @@
 }
 
 .review .container .col-2 {
+    background-color: var(--color-background-secondary);   
+    display: flex;  
+    justify-content: space-evenly;
+    flex-wrap: wrap;
     flex-basis: 80%;
     margin-left: 4px;
+    padding: 6px;
 }
