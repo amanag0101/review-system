@@ -8,8 +8,8 @@ import FlareIcon from '@mui/icons-material/Flare';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-import { LayoutContext } from "../layout/Layout";
-import { Theme } from "../constants/Theme";
+import { LayoutContext } from "../../layout/Layout";
+import { Theme } from "../../constants/Theme";
 import styles from "./header.module.css";
 
 export default function Header() {

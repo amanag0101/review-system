@@ -1,5 +1,5 @@
-import Searchbar from "../searchbar/Searchbar";
-import Filter from "../filter/Filter";
+import Searchbar from "../common/searchbar/Searchbar";
+import Filter from "../common/filter/Filter";
 import styles from "./review.module.css";
 import ItemBox from "./ItemBox";
 

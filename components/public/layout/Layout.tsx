@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 
 import { Theme } from "../constants/Theme";
-import Footer from "../footer/Footer";
-import Header from "../header/Header";
+import Footer from "../common/footer/Footer";
+import Header from "../common/header/Header";
 import { getThemeFromLocalStorage, setThemeInLocalStorage } from "../storage/LocalStorage";
 
 interface LayoutContextProps {
