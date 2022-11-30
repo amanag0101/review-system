@@ -8,6 +8,14 @@ export default function AddReview() {
     const [image, setImage] = useState();
     const [data, setData] = useState('');
     const [productName, setProductName] = useState(''); 
+    // const [product, setProduct] = useState<{
+    //     productName: '',
+    //     isProductName: false,
+    //     isAmazon: false,
+    //     price: 0,
+    //     orderNumber: '',
+    //     invoiceNumber: ''
+    // }>({});
     
     const verifyInvoice = () => {
         setIsLoading(true);
@@ -24,28 +32,45 @@ export default function AddReview() {
 
     const getInvoiceDetails = () => {
         let result = data?.match(new RegExp(productName, 'mi'));
+        const isProductName = result?.index >= 0; 
         let temp = result?.index >= 0;
-        console.log("isProductNameCorrect: " + temp);
+        // console.log("isProductNameCorrect: " + temp);
 
         let amazon = /a\s*m\s*a\s*z\s*o\s*n/mi;
+        const isAmazon = data?.match(amazon).index === 0; 
         temp = data?.match(amazon).index === 0;
-        console.log("isAmazonPresent: " + temp);
+        // console.log("isAmazonPresent: " + temp);
 
         let invoiceDate = /[\n\r][ \t]*Invoice Date :[ \t]*([^\n\r]*)/mi;
         temp = data?.match(invoiceDate)?.[1];
-        console.log("Invoice Date: " + temp);
+        let invoiceDate1 = temp;
+        // console.log("Invoice Date: " + temp);
 
         let orderNumber = /[\n\r][ \t]*Order Number:[ \t]*([^\n\r]*)/mi;
         temp = data?.match(orderNumber)?.[1];
-        console.log("Order Number: " + temp);
+        let orderNumber1 = temp;
+        // console.log("Order Number: " + temp);
         // console.log(data.match(orderNumber));
 
         let amountInWords = /[\n\r][ \t]*Amount in Words:[ \t\s]*([^\n\r]*)/mi;
         temp = data?.match(amountInWords)?.[1];
         let price = wordsToNumbers(temp);
-        console.log("Amount in words: " + temp);
+        let price1 = price.split(" ")[0];
+        // console.log("Amount in words: " + temp);
         // console.log(data.match(amountInWords));
-        console.log("Price: " + price.split(" ")[0]);
+        // console.log("Price: " + price.split(" ")[0]);
+
+        const productTemp = {
+            isAmazon: isAmazon,
+            productName: productName,
+            isProductName: isProductName,
+            invoiceDate: invoiceDate1,
+            orderNumber: orderNumber1.split(" ")[0],
+            invoiceNumber: orderNumber1.split(" ")[3],
+            price: price1
+        }
+
+        console.log(productTemp);
     }
 
     return (
