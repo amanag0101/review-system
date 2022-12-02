@@ -1,7 +1,7 @@
-import Searchbar from "../common/searchbar/Searchbar";
-import Filter from "../common/filter/Filter";
 import styles from "./review.module.css";
 import ItemBox from "./ItemBox";
+import Searchbar from "../../common/searchbar/Searchbar";
+import Filter from "../../common/filter/Filter";
 
 export default function Review() {
     return (
