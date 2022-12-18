@@ -1,17 +1,10 @@
 import {
-  Button,
   Dialog,
   DialogProps,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
   DialogTitle,
-  TextField,
 } from "@mui/material";
-import { match } from "assert";
 import { useEffect, useState } from "react";
 import Tesseract from "tesseract.js";
-import { isMainThread } from "worker_threads";
 import CircularProgressWithLabel from "../common/progressbar/CircularProgressWithLabel";
 import wordsToNumbers from 'words-to-numbers';
 import styles from "./add-review.module.css";
@@ -138,27 +131,27 @@ export default function AddReview() {
           required
         />
 
-        <input
+        {/* <input
           type="url"
           placeholder="Enter product page link"
           onChange={(e) => setProductPageLink(e.target.value)}
-        />
+        /> */}
 
-        <input
+        {/* <input
           type="file"
           placeholder="Choose file"
           onChange={(e) =>
             setInvoiceImage(e.target.files ? e.target.files[0] : null)
           }
           required
-        />
+        /> */}
 
         <textarea rows={15} defaultValue={invoiceImageData}></textarea>
 
         {
           progress === 100 
             ? <button onClick={extractInvoiceDataFromProcessedImage}>Verify Invoice</button> 
-            : <button onClick={processInvoiceImage}>Extract Text</button>
+            : <button onClick={processInvoiceImage}>Post Review</button>
         }
       </div>
 

@@ -1,3 +1,8 @@
 .filters {
     background-color: var(--color-background-secondary);   
+    padding: 8px;
+}
+
+.filters .filter {
+    margin-top: 5px;
 }
