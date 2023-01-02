@@ -14,6 +14,11 @@ a {
   text-decoration: none;
 }
 
+button,
+input[type="submit"] {
+  cursor: pointer;
+}
+
 .horizontal-divider {
   border: 1px solid var(--color-background-secondary);
   width: 100%;
@@ -47,9 +52,17 @@ body[data-theme="light"] a {
   color: var(--color-text-primary);
 }
 
-body[data-theme="light"] input {
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea {
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
+}
+
+body[data-theme="light"] button,
+body[data-theme="light"] input[type="submit"] {
+  background-color: var(--color-blue);
+  color: #fff;
 }
 
 /* Dark Theme */
@@ -74,9 +87,16 @@ body[data-theme="dark"] a {
   color: var(--color-text-primary);
 }
 
-body[data-theme="dark"] input {
+body[data-theme="dark"] input,
+body[data-theme="dark"] textarea  {
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
+}
+
+body[data-theme="dark"] button,
+body[data-theme="dark"] input[type="submit"] {
+  background-color: var(--color-blue);
+  color: #fff;
 }
 
 /* Scrollbar */

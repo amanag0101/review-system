@@ -1,5 +1,5 @@
-import Layout from "../../components/public/layout/Layout";
-import Review from "../../components/public/review/Review";
+import Layout from "../../src/components/common/layout/Layout";
+import Review from "../../src/components/public/review/Review";
 
 export default function User() {
     return (

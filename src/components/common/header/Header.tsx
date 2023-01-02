@@ -8,9 +8,9 @@ import FlareIcon from '@mui/icons-material/Flare';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-import { LayoutContext } from "../../layout/Layout";
-import { Theme } from "../../constants/Theme";
 import styles from "./header.module.css";
+import { LayoutContext } from "../layout/Layout";
+import { Theme } from "../../../constants/Theme";
 
 export default function Header() {
     const {theme, toggleTheme} = useContext(LayoutContext);
@@ -52,7 +52,7 @@ export default function Header() {
             <div className={styles["col-3"]}>
                 <div className={`${styles.item} ${styles[isActiveLink("/login")]}`}>
                     <AccountCircleIcon className="icon" />
-                    <Link href="#">Login</Link>
+                    <Link href="/login">Logout</Link>
                 </div>
             </div>
         </div>  
