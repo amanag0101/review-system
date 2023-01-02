@@ -47,7 +47,8 @@ body[data-theme="light"] a {
   color: var(--color-text-primary);
 }
 
-body[data-theme="light"] input {
+body[data-theme="light"] input,
+body[data-theme="light"] textarea  {
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
 }
@@ -74,7 +75,8 @@ body[data-theme="dark"] a {
   color: var(--color-text-primary);
 }
 
-body[data-theme="dark"] input {
+body[data-theme="dark"] input,
+body[data-theme="dark"] textarea  {
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
 }

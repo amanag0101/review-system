@@ -1,0 +1,24 @@
+.add-review {
+    padding: 8px;
+}
+
+.add-review .container {
+    width: 80%;
+    margin: auto;
+}
+
+.add-review .container input,
+.add-review .container textarea,
+.add-review .container button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: none;
+}
+
+.add-review .container button {
+    background-color: dodgerblue;
+    color: #fff;
+    cursor: pointer;
+}

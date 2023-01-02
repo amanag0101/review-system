@@ -4,6 +4,10 @@ import styles from "./review.module.css";
 import ItemBox from "./ItemBox";
 
 export default function Review() {
+    const addReview = () => {
+        console.log("Woere")
+    }
+
     return (
         <div className={styles.review}>
             <div className={styles.searchbar}>

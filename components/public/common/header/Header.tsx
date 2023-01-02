@@ -5,6 +5,7 @@ import { useContext } from "react";
 import HomeIcon from '@mui/icons-material/Home';
 import StarIcon from '@mui/icons-material/Star';
 import FlareIcon from '@mui/icons-material/Flare';
+import AddIcon from '@mui/icons-material/Add';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -38,6 +39,11 @@ export default function Header() {
                     <StarIcon className="icon" />
                     <Link href="/reviews">Reviews</Link>
                 </div>
+
+                <div className={`${styles.item} ${styles[isActiveLink("/reviews/add")]}`}>
+                    <AddIcon className="icon" />
+                    <Link href="/reviews/add">Add Review</Link>
+                </div>
                 
                 <div className={styles.theme}>
                     <div className={styles["col-1"]} onClick={toggleTheme}>
@@ -52,7 +58,7 @@ export default function Header() {
             <div className={styles["col-3"]}>
                 <div className={`${styles.item} ${styles[isActiveLink("/login")]}`}>
                     <AccountCircleIcon className="icon" />
-                    <Link href="#">Login</Link>
+                    <Link href="#">Logout</Link>
                 </div>
             </div>
         </div>  
