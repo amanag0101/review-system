@@ -52,7 +52,7 @@ export default function Header() {
             <div className={styles["col-3"]}>
                 <div className={`${styles.item} ${styles[isActiveLink("/login")]}`}>
                     <AccountCircleIcon className="icon" />
-                    <Link href="#">Login</Link>
+                    <Link href="/login">Login</Link>
                 </div>
             </div>
         </div>  
