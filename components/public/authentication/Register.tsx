@@ -1,65 +1,76 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styles from "./register.module.css";
-
-interface RegisterUserPayload {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    passwordRepeat: string
-}
+import { Constants } from "../constants/Constants";
+import { RegisterUserPayload } from "./interface/RegisterUserPayload";
+import { UserResponse } from "./interface/UserResponse";
 
 export default function Register() {
-    const [firstName, setFirstName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [passwordRepeat, setPasswordRepeat] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
-    const registerUser = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const registerUser = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-        const payload: RegisterUserPayload = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-            passwordRepeat: passwordRepeat
-        };
-    }
+    const payload: RegisterUserPayload = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      passwordRepeat: passwordRepeat,
+    };
 
-    return (
-        <form className={styles.register} onSubmit={registerUser}>
-            <h2>Register</h2>
-            <input 
-                type="text" 
-                placeholder="Enter your first name" 
-                onChange={(e) => setFirstName(e.target.value)}>
-            </input>
-            <input 
-                type="text" 
-                placeholder="Enter your last name" 
-                onChange={(e) => setLastName(e.target.value)}>
-            </input>
-            <input 
-                type="email" 
-                placeholder="Enter your email" 
-                onChange={(e) => setEmail(e.target.value)}>
-            </input>
-            <input 
-                type="password" 
-                placeholder="Enter password"
-                autoComplete="on"
-                onChange={(e) => setPassword(e.target.value)}>
-            </input>
-            <input 
-                type="password" 
-                placeholder="Repeat password"
-                autoComplete="on"
-                onChange={(e) => setPasswordRepeat(e.target.value)}>
-            </input>
+    fetch(`${Constants.API_URL}/user/register`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async (response) => {
+        const res: UserResponse = await response.json() as UserResponse;
+        if (response.ok && response.status === 200) {
+          console.log("Registration Successfull");
+          // login user
+        } 
+      })
+      .catch((error) => console.log(error));
+  };
 
-            <input type="submit" value="Register"/>
-        </form>
-    );
+  return (
+    <form className={styles.register} onSubmit={registerUser}>
+      <h2>Register</h2>
+      <input
+        type="text"
+        placeholder="Enter your first name"
+        onChange={(e) => setFirstName(e.target.value)}
+      ></input>
+      <input
+        type="text"
+        placeholder="Enter your last name"
+        onChange={(e) => setLastName(e.target.value)}
+      ></input>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        onChange={(e) => setEmail(e.target.value)}
+      ></input>
+      <input
+        type="password"
+        placeholder="Enter password"
+        autoComplete="on"
+        onChange={(e) => setPassword(e.target.value)}
+      ></input>
+      <input
+        type="password"
+        placeholder="Repeat password"
+        autoComplete="on"
+        onChange={(e) => setPasswordRepeat(e.target.value)}
+      ></input>
+
+      <input type="submit" value="Register" />
+    </form>
+  );
 }

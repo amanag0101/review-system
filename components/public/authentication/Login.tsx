@@ -1,10 +1,8 @@
 import { FormEvent, useState } from "react";
 import styles from "./login.module.css";
-
-interface LoginUserPayload {
-    email: string,
-    password: string
-}
+import { LoginUserPayload } from "./interface/LoginUserPayload";
+import { Constants } from "../constants/Constants";
+import { UserResponse } from "./interface/UserResponse";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
@@ -17,6 +15,22 @@ export default function Login() {
         email: email,
         password: password
     }
+
+    fetch(`${Constants.API_URL}/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async (response) => {
+        const res: UserResponse = await response.json() as UserResponse;
+        if (response.ok && response.status === 200) {
+          console.log("Registration Successfull");
+          // login user
+        } 
+      })
+      .catch((error) => console.log(error));
   }
 
   return (
