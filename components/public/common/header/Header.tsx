@@ -4,6 +4,7 @@ import { useContext } from "react";
 
 import HomeIcon from "@mui/icons-material/Home";
 import StarIcon from "@mui/icons-material/Star";
+import AddIcon from '@mui/icons-material/Add';
 import FlareIcon from "@mui/icons-material/Flare";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -48,7 +49,7 @@ export default function Header() {
               styles[isActiveLink("/user/add-review")]
             }`}
           >
-            <StarIcon className="icon" />
+            <AddIcon className="icon" />
             <Link href="/user/add-review">Add Review</Link>
           </div>
         ) : (
