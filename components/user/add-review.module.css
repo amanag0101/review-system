@@ -16,3 +16,11 @@
     margin-top: 6px;
     border: none;
 }
+
+.add-review .error-msg {
+    /* text-align: center; */
+    width: 80%;
+    margin: auto;
+    margin-top: 4px;
+    color: red;
+}

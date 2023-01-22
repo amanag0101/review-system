@@ -7,9 +7,7 @@ import {
   getThemeFromLocalStorage,
   setThemeInLocalStorage,
   isUserLoggedIn,
-  getLoggedInUserFromLocalStorage,
 } from "../storage/LocalStorage";
-import { useRouter } from "next/router";
 
 interface LayoutContextProps {
   theme: Theme;

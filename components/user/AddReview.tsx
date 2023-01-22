@@ -1,15 +1,23 @@
 import { Dialog, DialogProps, DialogTitle } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Tesseract from "tesseract.js";
 import wordsToNumbers from "words-to-numbers";
 import styles from "./add-review.module.css";
 import CircularProgressWithLabel from "../public/common/progressbar/CircularProgressWithLabel";
 import { Constants } from "../public/constants/Constants";
+import { AppContext } from "../../pages/_app";
+import { v4 as uuidv4 } from "uuid";
+import pinataSDK from "@pinata/sdk";
+import axios from "axios";
 
 interface VerifyAmazonInvoiceRequest {
   productName: string;
   orderNumber: string;
   invoiceNumber: string;
+}
+
+interface VerifyAmazonInvoiceResponse {
+  valid: boolean;
 }
 
 interface InvoiceData {
@@ -23,21 +31,34 @@ interface InvoiceData {
 }
 
 export default function AddReview() {
+  const { account, reviewContract } = useContext(AppContext);
   const [productName, setProductName] = useState<string>("");
   const [productPageLink, setProductPageLink] = useState<string>("");
+  const [reviewTitle, setReviewTitle] = useState<string>("");
+  const [review, setReview] = useState<string>("");
   const [invoiceImage, setInvoiceImage] = useState<File | null>(null);
+  const [reviewImage, setReviewImage] = useState<File | null>(null);
   const [invoiceImageData, setInvoiceImageData] = useState<string>("");
   const [invoiceData, setInvoiceData] = useState<InvoiceData>();
+  const [invoiceBuffer, setInvoiceBuffer] = useState<Buffer>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [isInvoiceValid, setIsInvoiceValid] = useState<boolean>(false);
 
   useEffect(() => {
     if (progress === 100) setDialogOpen(false);
   }, [progress]);
 
-//   useEffect(() => {
-//     console.log(invoiceData);
-//   }, [invoiceData]);
+  useEffect(() => {
+    if (invoiceImageData !== "") extractInvoiceDataFromProcessedImage();
+  }, [invoiceImageData]);
+
+  useEffect(() => {
+    if (invoiceData !== undefined) {
+      console.log(invoiceData);
+      verifyInvoice();
+    }
+  }, [invoiceData]);
 
   function processInvoiceImage() {
     setDialogOpen(true);
@@ -86,19 +107,19 @@ export default function AddReview() {
       price: price,
     });
 
-    verifyInvoice();
+    // verifyInvoice();
     setDialogOpen(false);
   }
 
   async function verifyInvoice() {
     let url = `${Constants.API_URL}/amazon-invoice/verify`;
-    let payload = {
-      productName: invoiceData?.productName,
-      orderNumber: invoiceData?.orderNumber,
-      invoiceNumber: invoiceData?.invoiceNumber,
+    let payload: VerifyAmazonInvoiceRequest = {
+      productName: invoiceData?.productName ?? "",
+      orderNumber: invoiceData?.orderNumber ?? "",
+      invoiceNumber: invoiceData?.invoiceNumber ?? "",
     };
 
-    // console.log(payload);
+    console.log(payload);
 
     fetch(url, {
       headers: {
@@ -108,45 +129,168 @@ export default function AddReview() {
       body: JSON.stringify(payload),
     })
       .then(async (res) => await res.json())
-    //   .then((res) => console.log(res))
+      .then((res) => {
+        const response: VerifyAmazonInvoiceResponse = res;
+        setIsInvoiceValid(response.valid);
+        console.log(res);
+      })
       .catch((err) => console.log(err));
+  }
+
+  async function addReview() {
+    let imgHash = "";
+    console.log("Adding image to ipfs");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", reviewImage as Blob);
+
+      const resFile = await axios({
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        data: formData,
+        headers: {
+          pinata_api_key: "3950d1fcef3a77c4ab54",
+          pinata_secret_api_key:
+            "fea027a87cd9927be70e44f43089048a3c50904f173e5c36469c57201db311c8",
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      imgHash = resFile.data.IpfsHash;
+      console.log(`https://gateway.pinata.cloud/ipfs/${imgHash}`);
+    } catch (error) {
+      console.log("Error sending File to IPFS: ");
+      console.log(error);
+    }
+
+    console.log("Adding Review");
+    reviewContract!!.methods
+      .uploadPost(
+        imgHash,
+        invoiceData?.productName,
+        productPageLink,
+        invoiceData?.price,
+        reviewTitle,
+        4,
+        review
+      )
+      .send({ from: account, gas: 900000 });
+  }
+
+  async function addImage() {
+    try {
+      const formData = new FormData();
+      formData.append("file", invoiceImage as Blob);
+
+      const resFile = await axios({
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        data: formData,
+        headers: {
+          pinata_api_key: "3950d1fcef3a77c4ab54",
+          pinata_secret_api_key:
+            "fea027a87cd9927be70e44f43089048a3c50904f173e5c36469c57201db311c8",
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const ImgHash = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+      console.log(ImgHash);
+    } catch (error) {
+      console.log("Error sending File to IPFS: ");
+      console.log(error);
+    }
   }
 
   return (
     <div className={styles["add-review"]}>
       <div className={styles.container}>
-        <input
-          type="text"
-          placeholder="Enter product name"
-          onChange={(e) => setProductName(e.target.value)}
-          required
-        />
+        {isInvoiceValid ? (
+          <></>
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="Enter product name"
+              onChange={(e) => setProductName(e.target.value)}
+              required
+            />
 
-        <input
-          type="url"
-          placeholder="Enter product page link"
-          onChange={(e) => setProductPageLink(e.target.value)}
-        />
+            <input
+              type="url"
+              placeholder="Enter product page link"
+              onChange={(e) => setProductPageLink(e.target.value)}
+            />
 
-        <input
-          type="file"
-          placeholder="Choose file"
-          onChange={(e) =>
-            setInvoiceImage(e.target.files ? e.target.files[0] : null)
-          }
-          required
-        />
+            <input
+              type="file"
+              placeholder="Choose file"
+              onChange={(e) => {
+                console.log("Inside file");
+                setInvoiceImage(e.target.files ? e.target.files[0] : null);
+                const data = e.target.files ? e.target.files[0] : null;
+                const reader = new window.FileReader();
+                reader.readAsArrayBuffer(data as Blob);
+                reader.onloadend = () => {
+                  console.log("Buffer data: ", Buffer.from(reader.result));
+                  setInvoiceBuffer(Buffer.from(reader.result));
+                };
+              }}
+              required
+            />
+          </>
+        )}
 
-        <textarea rows={15} defaultValue={invoiceImageData}></textarea>
+        {isInvoiceValid ? (
+          <input
+            type="text"
+            placeholder="Enter review title"
+            onChange={(e) => setReviewTitle(e.target.value)}
+          />
+        ) : (
+          <></>
+        )}
 
-        {progress === 100 ? (
+        {isInvoiceValid ? (
+          <textarea
+            rows={15}
+            defaultValue={review}
+            onChange={(e) => setReview(e.target.value)}
+          ></textarea>
+        ) : (
+          <></>
+        )}
+
+        {isInvoiceValid ? (
+          <input
+            type="file"
+            placeholder="Choose file"
+            onChange={(e) => {
+              setReviewImage(e.target.files ? e.target.files[0] : null);
+            }}
+            required
+          />
+        ) : (
+          <></>
+        )}
+
+        {/* {progress === 100 ? (
           <button onClick={extractInvoiceDataFromProcessedImage}>
             Verify Invoice
           </button>
         ) : (
           <button onClick={processInvoiceImage}>Extract Text</button>
+        )} */}
+
+        {isInvoiceValid ? (
+          <button onClick={addReview}>Add Review</button>
+        ) : (
+          <button onClick={processInvoiceImage}>Verify Invoice</button>
         )}
       </div>
+
+      <p className={styles["error-msg"]}>{"Error Message"}</p>
 
       <Dialog open={dialogOpen} maxWidth={"xl" as DialogProps["maxWidth"]}>
         <DialogTitle style={{ color: "#000" }}>
