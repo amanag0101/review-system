@@ -27,6 +27,7 @@ export default function Review() {
   const { reviewContract } = useContext(AppContext);
   const [postCount, setPostCount] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   useEffect(() => {
@@ -52,7 +53,11 @@ export default function Review() {
   return (
     <div className={styles.review}>
       <div className={styles.searchbar}>
-        <Searchbar width={50} />
+        <Searchbar
+          width={50}
+          posts={posts}
+          setFilteredPosts={setFilteredPosts}
+        />
       </div>
 
       <div className={styles["container"]}>
@@ -60,21 +65,37 @@ export default function Review() {
           <Filter />
         </div>
         <div className={styles["col-2"]}>
-          {posts.map((post) => {
-            return (
-              <div key={post.id} className={styles["item"]}>
-                <ItemBox
-                  id={post.id}
-                  productName={post.productName}
-                  productLink={post.productLink}
-                  price={post.price}
-                  rating={post.rating}
-                  imageHash={post.image.hash}
-                  review={post.review}
-                />
-              </div>
-            );
-          })}
+          {filteredPosts.length === 0
+            ? posts.map((post) => {
+                return (
+                  <div key={post.id} className={styles["item"]}>
+                    <ItemBox
+                      id={post.id}
+                      productName={post.productName}
+                      productLink={post.productLink}
+                      price={post.price}
+                      rating={post.rating}
+                      imageHash={post.image.hash}
+                      review={post.review}
+                    />
+                  </div>
+                );
+              })
+            : filteredPosts.map((post) => {
+                return (
+                  <div key={post.id} className={styles["item"]}>
+                    <ItemBox
+                      id={post.id}
+                      productName={post.productName}
+                      productLink={post.productLink}
+                      price={post.price}
+                      rating={post.rating}
+                      imageHash={post.image.hash}
+                      review={post.review}
+                    />
+                  </div>
+                );
+              })}
         </div>
       </div>
 
