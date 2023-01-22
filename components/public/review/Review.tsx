@@ -4,6 +4,7 @@ import styles from "./review.module.css";
 import ItemBox from "./ItemBox";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../pages/_app";
+import { Dialog, DialogProps, DialogTitle } from "@mui/material";
 
 export interface Image {
   hash: string;
@@ -26,23 +27,26 @@ export default function Review() {
   const { reviewContract } = useContext(AppContext);
   const [postCount, setPostCount] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   useEffect(() => {
     getPosts();
   }, []);
 
   async function getPosts() {
+    setShowDialog(true);
+
     const postCount: number = await reviewContract?.methods.postCount().call();
     setPostCount(postCount);
 
     let posts: Post[] = [];
     for (let i = 1; i <= postCount; i++) {
       const post = (await reviewContract?.methods.posts(i).call()) as Post;
-      console.log(post);
       posts.push(post);
     }
 
     setPosts(posts);
+    setShowDialog(false);
   }
 
   return (
@@ -58,10 +62,7 @@ export default function Review() {
         <div className={styles["col-2"]}>
           {posts.map((post) => {
             return (
-              <div
-                key={post.id}
-                className={styles["item"]}
-              >
+              <div key={post.id} className={styles["item"]}>
                 <ItemBox
                   id={post.id}
                   productName={post.productName}
@@ -69,12 +70,19 @@ export default function Review() {
                   price={post.price}
                   rating={post.rating}
                   imageHash={post.image.hash}
+                  review={post.review}
                 />
               </div>
             );
           })}
         </div>
       </div>
+
+      <Dialog open={showDialog} maxWidth={"xl" as DialogProps["maxWidth"]}>
+        <DialogTitle style={{ color: "#000" }}>
+          Fetching Reviews ...
+        </DialogTitle>
+      </Dialog>
     </div>
   );
 }

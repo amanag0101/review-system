@@ -15,10 +15,6 @@ export default function ProductDetails() {
     getPosts();
   }, []);
 
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
-
   async function getPosts() {
     const postCount: number = await reviewContract?.methods.postCount().call();
     for (let i = 1; i <= postCount; i++) {
