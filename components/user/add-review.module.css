@@ -17,8 +17,19 @@
     border: none;
 }
 
+.add-review .container .rating {
+    background-color: var(--color-background-secondary);
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-top: 6px;
+}
+
+.add-review .container .rating p {
+    margin-right: 4px;
+}
+
 .add-review .error-msg {
-    /* text-align: center; */
     width: 80%;
     margin: auto;
     margin-top: 4px;

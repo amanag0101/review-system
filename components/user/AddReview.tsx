@@ -1,4 +1,4 @@
-import { Dialog, DialogProps, DialogTitle } from "@mui/material";
+import { Dialog, DialogProps, DialogTitle, Rating } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Tesseract from "tesseract.js";
 import wordsToNumbers from "words-to-numbers";
@@ -6,9 +6,8 @@ import styles from "./add-review.module.css";
 import CircularProgressWithLabel from "../public/common/progressbar/CircularProgressWithLabel";
 import { Constants } from "../public/constants/Constants";
 import { AppContext } from "../../pages/_app";
-import { v4 as uuidv4 } from "uuid";
-import pinataSDK from "@pinata/sdk";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface VerifyAmazonInvoiceRequest {
   productName: string;
@@ -36,14 +35,17 @@ export default function AddReview() {
   const [productPageLink, setProductPageLink] = useState<string>("");
   const [reviewTitle, setReviewTitle] = useState<string>("");
   const [review, setReview] = useState<string>("");
+  const [rating, setRating] = useState<number>(1);
   const [invoiceImage, setInvoiceImage] = useState<File | null>(null);
   const [reviewImage, setReviewImage] = useState<File | null>(null);
   const [invoiceImageData, setInvoiceImageData] = useState<string>("");
   const [invoiceData, setInvoiceData] = useState<InvoiceData>();
-  const [invoiceBuffer, setInvoiceBuffer] = useState<Buffer>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [addReviewDialog, setAddReviewDialog] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [isInvoiceValid, setIsInvoiceValid] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
     if (progress === 100) setDialogOpen(false);
@@ -55,12 +57,23 @@ export default function AddReview() {
 
   useEffect(() => {
     if (invoiceData !== undefined) {
-      console.log(invoiceData);
       verifyInvoice();
     }
   }, [invoiceData]);
 
   function processInvoiceImage() {
+    if (productName === "") {
+      setErrorMessage("Please enter the product name !");
+      return;
+    }
+
+    if (invoiceImage === null) {
+      setErrorMessage("Please upload an image of your invoice!");
+      return;
+    }
+
+    setErrorMessage("");
+
     setDialogOpen(true);
     Tesseract.recognize(invoiceImage ?? "", "eng", {
       logger: (m) => {
@@ -107,19 +120,21 @@ export default function AddReview() {
       price: price,
     });
 
-    // verifyInvoice();
     setDialogOpen(false);
   }
 
   async function verifyInvoice() {
+    if (!invoiceData?.isProductName) {
+      setErrorMessage("Invalid product name !");
+      return;
+    } else setErrorMessage("");
+
     let url = `${Constants.API_URL}/amazon-invoice/verify`;
     let payload: VerifyAmazonInvoiceRequest = {
       productName: invoiceData?.productName ?? "",
       orderNumber: invoiceData?.orderNumber ?? "",
       invoiceNumber: invoiceData?.invoiceNumber ?? "",
     };
-
-    console.log(payload);
 
     fetch(url, {
       headers: {
@@ -132,14 +147,32 @@ export default function AddReview() {
       .then((res) => {
         const response: VerifyAmazonInvoiceResponse = res;
         setIsInvoiceValid(response.valid);
-        console.log(res);
+
+        if (!response.valid) setErrorMessage("Invalid Invoice!");
       })
       .catch((err) => console.log(err));
   }
 
   async function addReview() {
+    if (reviewTitle === "") {
+      setErrorMessage("Review Title cannot be blank !");
+      return;
+    }
+
+    if (review === "") {
+      setErrorMessage("Review cannot be blank !");
+      return;
+    }
+
+    if (reviewImage === null) {
+      setErrorMessage("Please upload a product image.");
+      return;
+    }
+
+    setErrorMessage("");
+    setAddReviewDialog(true);
+
     let imgHash = "";
-    console.log("Adding image to ipfs");
 
     try {
       const formData = new FormData();
@@ -158,13 +191,11 @@ export default function AddReview() {
       });
 
       imgHash = resFile.data.IpfsHash;
-      console.log(`https://gateway.pinata.cloud/ipfs/${imgHash}`);
     } catch (error) {
       console.log("Error sending File to IPFS: ");
       console.log(error);
     }
 
-    console.log("Adding Review");
     reviewContract!!.methods
       .uploadPost(
         imgHash,
@@ -172,35 +203,13 @@ export default function AddReview() {
         productPageLink,
         invoiceData?.price,
         reviewTitle,
-        4,
+        rating,
         review
       )
       .send({ from: account, gas: 900000 });
-  }
 
-  async function addImage() {
-    try {
-      const formData = new FormData();
-      formData.append("file", invoiceImage as Blob);
-
-      const resFile = await axios({
-        method: "post",
-        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
-        data: formData,
-        headers: {
-          pinata_api_key: "3950d1fcef3a77c4ab54",
-          pinata_secret_api_key:
-            "fea027a87cd9927be70e44f43089048a3c50904f173e5c36469c57201db311c8",
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const ImgHash = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
-      console.log(ImgHash);
-    } catch (error) {
-      console.log("Error sending File to IPFS: ");
-      console.log(error);
-    }
+    setAddReviewDialog(false);
+    router.push("/reviews");
   }
 
   return (
@@ -212,7 +221,7 @@ export default function AddReview() {
           <>
             <input
               type="text"
-              placeholder="Enter product name"
+              placeholder="Enter product name *"
               onChange={(e) => setProductName(e.target.value)}
               required
             />
@@ -227,15 +236,7 @@ export default function AddReview() {
               type="file"
               placeholder="Choose file"
               onChange={(e) => {
-                console.log("Inside file");
                 setInvoiceImage(e.target.files ? e.target.files[0] : null);
-                const data = e.target.files ? e.target.files[0] : null;
-                const reader = new window.FileReader();
-                reader.readAsArrayBuffer(data as Blob);
-                reader.onloadend = () => {
-                  console.log("Buffer data: ", Buffer.from(reader.result));
-                  setInvoiceBuffer(Buffer.from(reader.result));
-                };
               }}
               required
             />
@@ -245,7 +246,7 @@ export default function AddReview() {
         {isInvoiceValid ? (
           <input
             type="text"
-            placeholder="Enter review title"
+            placeholder="Enter review title *"
             onChange={(e) => setReviewTitle(e.target.value)}
           />
         ) : (
@@ -254,6 +255,7 @@ export default function AddReview() {
 
         {isInvoiceValid ? (
           <textarea
+            placeholder="Write your review... *"
             rows={15}
             defaultValue={review}
             onChange={(e) => setReview(e.target.value)}
@@ -275,13 +277,19 @@ export default function AddReview() {
           <></>
         )}
 
-        {/* {progress === 100 ? (
-          <button onClick={extractInvoiceDataFromProcessedImage}>
-            Verify Invoice
-          </button>
+        {isInvoiceValid ? (
+          <div className={styles["rating"]}>
+            <p>Rating: </p>
+            <Rating
+              name="half-rating-read"
+              value={rating}
+              precision={1}
+              onChange={(e, val) => setRating(val ?? 1)}
+            />
+          </div>
         ) : (
-          <button onClick={processInvoiceImage}>Extract Text</button>
-        )} */}
+          <></>
+        )}
 
         {isInvoiceValid ? (
           <button onClick={addReview}>Add Review</button>
@@ -290,7 +298,11 @@ export default function AddReview() {
         )}
       </div>
 
-      <p className={styles["error-msg"]}>{"Error Message"}</p>
+      {errorMessage !== "" ? (
+        <p className={styles["error-msg"]}>{errorMessage}</p>
+      ) : (
+        <></>
+      )}
 
       <Dialog open={dialogOpen} maxWidth={"xl" as DialogProps["maxWidth"]}>
         <DialogTitle style={{ color: "#000" }}>
@@ -301,6 +313,10 @@ export default function AddReview() {
           variant="determinate"
           value={progress}
         />
+      </Dialog>
+
+      <Dialog open={addReviewDialog} maxWidth={"xl" as DialogProps["maxWidth"]}>
+        <DialogTitle style={{ color: "#000" }}>Adding Review ...</DialogTitle>
       </Dialog>
     </div>
   );
