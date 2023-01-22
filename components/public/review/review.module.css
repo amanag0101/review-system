@@ -26,10 +26,9 @@
 }
 
 .review .container .col-2 .item {
-    cursor: pointer;
     margin-bottom: 30px;
 }
 
 .review .container .col-2 .item:hover {
-    border: 1px solid var(--color-background-primary);
+    background-color: var(--color-background-primary);
 }

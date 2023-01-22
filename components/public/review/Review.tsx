@@ -4,7 +4,6 @@ import styles from "./review.module.css";
 import ItemBox from "./ItemBox";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../pages/_app";
-import { useRouter } from "next/router";
 
 export interface Image {
   hash: string;
@@ -12,22 +11,21 @@ export interface Image {
 }
 
 export interface Post {
-  id: string,
-  productName: string,
-  productLink: string,
-  price: number,
-  rating: number,
-  reviewTitle: string
-  review: string,
-  image: Image,
-  author: string
+  id: string;
+  productName: string;
+  productLink: string;
+  price: number;
+  rating: number;
+  reviewTitle: string;
+  review: string;
+  image: Image;
+  author: string;
 }
 
 export default function Review() {
-  const { account, reviewContract } = useContext(AppContext);
+  const { reviewContract } = useContext(AppContext);
   const [postCount, setPostCount] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     getPosts();
@@ -63,11 +61,9 @@ export default function Review() {
               <div
                 key={post.id}
                 className={styles["item"]}
-                onClick={() => {
-                  router.push(`/reviews/${post.id}`);
-                }}
               >
                 <ItemBox
+                  id={post.id}
                   productName={post.productName}
                   productLink={post.productLink}
                   price={post.price}

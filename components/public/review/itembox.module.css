@@ -9,11 +9,26 @@
     margin: auto;
 }
 
-.itembox p {
-    text-align: center;
-    padding: 2px;
+.itembox .item {
+    margin-top: 8px;
 }
 
-.itembox a {
+.itembox .item p {
+    text-align: center;
+    padding: 4px;
+}
+
+.itembox .item .product_name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.itembox .item .link a {
+    color: var(--color-blue);
     text-align: center;
 }
+
+.itembox .item .link a:hover {
+    text-decoration: underline;
+}
+
