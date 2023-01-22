@@ -12,6 +12,7 @@ interface ItemBoxProps {
   price: number;
   rating: number;
   imageHash: string;
+  reviewTitle: string;
   review: string;
 }
 
@@ -81,7 +82,7 @@ export default function ItemBox(props: ItemBoxProps) {
                 float: "right",
                 marginTop: "-20px",
                 fontSize: "20px",
-                fontWeight: "bold"
+                fontWeight: "bold",
               }}
               onClick={() => setShowModal(false)}
             >
@@ -111,6 +112,15 @@ export default function ItemBox(props: ItemBoxProps) {
             >
               <b>{props.productName}</b>
             </p>
+
+            <p
+              style={{
+                padding: "4px",
+              }}
+            >
+              <b>Rs {props.price}</b>
+            </p>
+
             <p
               style={{
                 padding: "4px",
@@ -127,26 +137,32 @@ export default function ItemBox(props: ItemBoxProps) {
                 {props.productLink}
               </a>
             </p>
-            <Rating
-              name="half-rating-read"
-              defaultValue={props.rating}
-              precision={1}
-              readOnly
-            />
-            <p
-              style={{
-                padding: "4px",
-              }}
-            >
-              <b>Rs {props.price}</b>
-            </p>
 
             <p
               style={{
                 padding: "4px",
+                textAlign: "left",
               }}
             >
-              <b>{props.review}</b>
+              <b>{props.reviewTitle}</b>
+            </p>
+
+            <p style={{ textAlign: "left" }}>
+              <Rating
+                name="half-rating-read"
+                defaultValue={props.rating}
+                precision={1}
+                readOnly
+              />
+            </p>
+
+            <p
+              style={{
+                textAlign: "left",
+                padding: "6px",
+              }}
+            >
+              {props.review}
             </p>
           </div>
         </Box>

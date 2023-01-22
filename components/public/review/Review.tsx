@@ -76,6 +76,7 @@ export default function Review() {
                       price={post.price}
                       rating={post.rating}
                       imageHash={post.image.hash}
+                      reviewTitle={post.reviewTitle}
                       review={post.review}
                     />
                   </div>
@@ -91,6 +92,7 @@ export default function Review() {
                       price={post.price}
                       rating={post.rating}
                       imageHash={post.image.hash}
+                      reviewTitle={post.reviewTitle}
                       review={post.review}
                     />
                   </div>
