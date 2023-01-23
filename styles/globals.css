@@ -48,7 +48,8 @@ body[data-theme="light"] {
 body[data-theme="light"] h1,
 body[data-theme="light"] h2,
 body[data-theme="light"] p,
-body[data-theme="light"] a {
+body[data-theme="light"] a,
+body[data-theme="light"] label {
   color: var(--color-text-primary);
 }
 
@@ -85,7 +86,8 @@ body[data-theme="dark"] {
 body[data-theme="dark"] h1,
 body[data-theme="dark"] h2,
 body[data-theme="dark"] p,
-body[data-theme="dark"] a {
+body[data-theme="dark"] a,
+body[data-theme="dark"] label {
   color: var(--color-text-primary);
 }
 

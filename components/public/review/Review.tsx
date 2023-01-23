@@ -62,7 +62,11 @@ export default function Review() {
 
       <div className={styles["container"]}>
         <div className={styles["col-1"]}>
-          <Filter />
+          <Filter
+            posts={posts}
+            setFilteredPosts={setFilteredPosts}
+            filteredPosts={filteredPosts}
+          />
         </div>
         <div className={styles["col-2"]}>
           {filteredPosts.length === 0
