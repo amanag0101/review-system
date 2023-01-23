@@ -151,6 +151,25 @@ export default function AddReview() {
         if (!response.valid) setErrorMessage("Invalid Invoice!");
       })
       .catch((err) => console.log(err));
+
+    fetch(`${Constants.API_URL}/amazon-invoice/is-used`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        orderNumber: invoiceData?.orderNumber ?? "",
+        invoiceNumber: invoiceData?.invoiceNumber ?? "",
+      }),
+    })
+      .then(async (res) => await res.json())
+      .then((res) => {
+        const isUsed: boolean = res;
+        setIsInvoiceValid(!isUsed);
+
+        if (isUsed) setErrorMessage("Invoice already used!");
+      })
+      .catch((err) => console.log(err));
   }
 
   async function addReview() {
@@ -207,6 +226,17 @@ export default function AddReview() {
         review
       )
       .send({ from: account, gas: 900000 });
+
+    fetch(`${Constants.API_URL}/amazon-invoice/set-used`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        orderNumber: invoiceData?.orderNumber ?? "",
+        invoiceNumber: invoiceData?.invoiceNumber ?? "",
+      }),
+    }).catch((err) => console.log(err));
 
     setAddReviewDialog(false);
     router.push("/reviews");
